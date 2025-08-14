@@ -19,26 +19,39 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.PluginRegistry.Registrar
 import java.util.Locale.ENGLISH
 
 
 class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
 
+    private var channel: MethodChannel? = null
+    private var context: Context? = null
+
     companion object {
 
-        var context: Context? = null
-
         @JvmStatic
-        fun registerWith(registrar: Registrar) {
-            context = registrar.context()
-            register(registrar.messenger())
+        fun registerWith(registrar: Any) {
+            try {
+                val messenger = registrar.javaClass.getMethod("messenger").invoke(registrar) as? BinaryMessenger
+                val ctx = registrar.javaClass.getMethod("context").invoke(registrar) as? Context
+                if (messenger != null && ctx != null) {
+                    val channel = MethodChannel(messenger, "installed_apps")
+                    val plugin = InstalledAppsPlugin()
+                    plugin.context = ctx
+                    plugin.channel = channel
+                    channel.setMethodCallHandler(plugin)
+                }
+            } catch (e: Exception) {
+                // legacy registrar not present or reflection failed — ignore
+            }
         }
 
         @JvmStatic
         fun register(messenger: BinaryMessenger) {
             val channel = MethodChannel(messenger, "installed_apps")
-            channel.setMethodCallHandler(InstalledAppsPlugin())
+            val plugin = InstalledAppsPlugin()
+            plugin.channel = channel
+            channel.setMethodCallHandler(plugin)
         }
     }
 

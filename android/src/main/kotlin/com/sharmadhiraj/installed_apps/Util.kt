@@ -27,7 +27,7 @@ class Util {
             map["version_name"] = packageInfo.versionName
             map["version_code"] = getVersionCode(packageInfo)
             map["built_with"] = BuiltWithUtil.getPlatform(packageInfo.applicationInfo)
-            map["installed_timestamp"] = File(packageInfo.applicationInfo.sourceDir).lastModified()
+            map["installed_timestamp"] = packageInfo.applicationInfo?.sourceDir?.let { File(it).lastModified() } ?: 0L
             return map
         }
 
