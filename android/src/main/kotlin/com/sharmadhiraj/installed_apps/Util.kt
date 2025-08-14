@@ -9,13 +9,12 @@ import android.os.Build.VERSION_CODES.P
 import java.io.File
 
 class Util {
-
     companion object {
-
         fun convertAppToMap(
             packageManager: PackageManager,
             app: ApplicationInfo,
-            withIcon: Boolean
+            withIcon: Boolean,
+            platformType: PlatformType?,
         ): HashMap<String, Any?> {
             val map = HashMap<String, Any?>()
             map["name"] = packageManager.getApplicationLabel(app)
@@ -31,7 +30,6 @@ class Util {
             return map
         }
 
-
         fun getPackageManager(context: Context): PackageManager {
             return context.packageManager
         }
@@ -41,7 +39,5 @@ class Util {
             return if (SDK_INT < P) packageInfo.versionCode.toLong()
             else packageInfo.longVersionCode
         }
-
     }
-
 }
