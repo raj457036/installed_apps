@@ -57,11 +57,11 @@ class InstalledAppsPlugin() : MethodCallHandler, FlutterPlugin, ActivityAware {
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         context = binding.applicationContext
         channel = MethodChannel(binding.binaryMessenger, "installed_apps")
-        channel.setMethodCallHandler(this)
+    channel?.setMethodCallHandler(this)
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
+    channel?.setMethodCallHandler(null)
     }
 
     override fun onAttachedToActivity(activityPluginBinding: ActivityPluginBinding) {
